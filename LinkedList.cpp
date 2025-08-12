@@ -50,6 +50,7 @@ LinkedList::LinkedList()
 {
     head = nullptr;
     tail = nullptr;
+    size = 0;
 }
 
 LinkedList::~LinkedList()
@@ -60,6 +61,14 @@ LinkedList::~LinkedList()
 void LinkedList::InitEmptyList(string data)
 {
     Node* node = new Node(data);
+    head = node;
+    tail = node;
+    node->SetNext(nullptr);
+    node->SetPrev(nullptr);
+}
+
+void LinkedList::InitEmptyList(Node* node)
+{
     head = node;
     tail = node;
     node->SetNext(nullptr);
@@ -81,12 +90,28 @@ void LinkedList::Add(string data)
         tail->SetNext(node);
         tail = node;
     }
+
+    size++;
+}
+
+void LinkedList::Add(Node* node)
+{
+    if (head == nullptr && tail == nullptr)
+    {
+        InitEmptyList(node);
+    }
+    else
+    {
+        node->SetPrev(tail);
+        tail->SetNext(node);
+        tail = node;
+    }
+
+    size++;
 }
 
 void LinkedList::Append(string data)
 {
-    // append node to the front of the lsit
-    // is list empty?
     if (head == nullptr && tail == nullptr)
     {
         InitEmptyList(data);
@@ -98,6 +123,72 @@ void LinkedList::Append(string data)
         head->SetPrev(node);
         head = node;
     }
+
+    size++;
+}
+
+void LinkedList::Append(Node* node)
+{
+    if (head == nullptr && tail == nullptr)
+    {
+        InitEmptyList(node);
+    }
+    else
+    {
+        node->SetNext(head);
+        head->SetPrev(node);
+        head = node;
+    }
+
+    size++;
+}
+
+void LinkedList::InsertAfter(string target, string data)
+{
+    Node* location = Find(data);
+    Node* node = new Node(data);
+
+    if (location == nullptr)
+    {
+        Add(node);
+    }
+    else if (location == tail)
+    {
+        Add(node);
+    }
+    else
+    {
+        location->SetNext(node);
+        node->SetPrev(location);
+        node->SetNext(location->GetNext());
+        location->GetNext()->SetPrev(node);
+
+        size++;
+    }
+}
+
+void LinkedList::InsertBefore(string target, string data)
+{
+    Node* location = Find(target);
+    Node* node = new Node(data);
+
+    if (location == nullptr)
+    {
+        Add(node);
+    }
+    else if (location == head)
+    {
+        Append(node);
+    }
+    else
+    {
+        location->SetPrev(node);
+        node->SetNext(location);
+        node->SetPrev(location->GetPrev());
+        location->GetPrev()->SetNext(node);
+
+        size++;
+    }
 }
 
 void LinkedList::PopFront()
@@ -107,6 +198,7 @@ void LinkedList::PopFront()
         Node* ptr = head->GetNext();
         delete head;
         head = ptr;
+        size--;
     }
     else
     {
@@ -121,6 +213,7 @@ void LinkedList::PopBack()
         Node* ptr = tail->GetPrev();
         delete tail;
         tail = ptr;
+        size--;
     }
     else
     {
@@ -128,15 +221,13 @@ void LinkedList::PopBack()
     }
 }
 
-void LinkedList::Remove(string data)
+bool LinkedList::Remove(string data)
 {
     Node* current = head;
     while (current != nullptr)
     {
         if (current->GetData() == data)
         {
-            // cout << current->GetData() << endl;
-            // we found the data to delete
             if (current == head)
             {
                 head = head->GetNext();
@@ -149,19 +240,28 @@ void LinkedList::Remove(string data)
                 delete current;
                 tail->SetNext(nullptr);
             }
-            else // somewhere in the middle
+            else
             {
                 Node* temp = current->GetPrev();
                 temp->SetNext(current->GetNext());
                 temp = current->GetNext();
                 temp->SetPrev(current->GetPrev());
-
                 delete current;
             }
+
+            size--;
+            return true;    
         }
-    
+
         current = current->GetNext();
     }
+    
+    return false;
+}
+
+void LinkedList::RemoveAll(string data)
+{
+    while (Remove(data));
 }
 
 void LinkedList::Clear()
@@ -173,6 +273,7 @@ void LinkedList::Clear()
         temp = current->GetNext();
         delete current;
         current = temp;
+        size--;
     }
 
     head = nullptr;
@@ -189,6 +290,12 @@ void LinkedList::Print()
     }
 }
 
+void LinkedList::Print(Node* node)
+{
+    if (node == nullptr) return;
+    cout << node->GetData() << endl;
+}
+
 void LinkedList::PrintReversed()
 {
     Node* current = tail;
@@ -197,4 +304,38 @@ void LinkedList::PrintReversed()
         cout << current->GetData() << " ";
         current = current->GetPrev();
     }
+}
+
+Node* LinkedList::Find(string data)
+{
+    Node* iterator = head;
+    while (iterator != nullptr)
+    {
+        if (iterator->GetData() == data)
+        {
+            return iterator;
+        }
+
+        iterator = iterator->GetNext();
+    }
+
+    return nullptr;
+}
+
+int LinkedList::Size()
+{
+    if (!size && head != nullptr && head != tail)
+    {
+        // this means size is 0, but there is data in the list.
+        // this shouldn't happen but in the case that it does,
+        // Size() will calculate the size of the list at O(n);
+        Node* iterator = head;
+        while (iterator != nullptr)
+        {
+            size++;
+            iterator = iterator->GetNext();
+        }
+    }
+    
+    return size;
 }

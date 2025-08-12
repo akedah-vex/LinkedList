@@ -42,6 +42,42 @@ int main ()
             cin >> input;
             List->Remove(input);
         }
+        else if (input == "removeall" || input == "ra")
+        {
+            cin >> input;
+            List->RemoveAll(input);
+        }
+        else if (input == "popf" || input == "pf")
+        {
+            List->PopFront();
+        }
+        else if (input == "popb" || input == "pb")
+        {
+            List->PopBack();
+        }
+        else if (input == "find")
+        {
+            cin >> input;
+            List->Print(List->Find(input));
+        }
+        else if (input == "size" || input == "s")
+        {
+            cout << List->Size() << endl;
+        }
+        else if (input == "insertbefore" || input == "ib")
+        {
+            string data = "";
+            cin >> input;
+            cin >> data;
+            List->InsertBefore(input, data);
+        }
+        else if (input == "insertafter" || input == "ia")
+        {
+            string data = "";
+            cin >> input;
+            cin >> data;
+            List->InsertAfter(input, data);
+        }
     }
 
     cout << "EXITING" << endl;

@@ -28,20 +28,36 @@ class LinkedList {
         LinkedList();
         ~LinkedList();
 
+        void InitEmptyList(string data);
+        void InitEmptyList(Node* node);
+
         void Add(string data);
+        void Add(Node* node);
         void Append(string data);
+        void Append(Node* node);
+
+        // TODO: Fix these functions and test them out
+        void InsertAfter(string target, string data);
+        void InsertBefore(string target, string data);
+
+        bool Remove(string data);
+        void RemoveAll(string data);
         void PopFront();
         void PopBack();
-
-        void InitEmptyList(string data);
-        void Remove(string data);
         void Clear();
 
         void Print();
+        void Print(Node* node);
         void PrintReversed();
+
+        Node* Find(string data);
+
+        int Size();
 
     private:
         Node* head;
         Node* tail;
+
+        int size;
 };
 
