@@ -30,6 +30,9 @@ class LinkedList {
 
         void Add(string data);
         void Append(string data);
+        void PopFront();
+        void PopBack();
+
         void InitEmptyList(string data);
         void Remove(string data);
         void Clear();

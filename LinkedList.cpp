@@ -100,6 +100,34 @@ void LinkedList::Append(string data)
     }
 }
 
+void LinkedList::PopFront()
+{
+    if (head != nullptr)
+    {
+        Node* ptr = head->GetNext();
+        delete head;
+        head = ptr;
+    }
+    else
+    {
+        tail = nullptr;
+    }
+}
+
+void LinkedList::PopBack()
+{
+    if (tail != nullptr)
+    {
+        Node* ptr = tail->GetPrev();
+        delete tail;
+        tail = ptr;
+    }
+    else
+    {
+        head = nullptr;
+    }
+}
+
 void LinkedList::Remove(string data)
 {
     Node* current = head;
