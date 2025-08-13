@@ -145,26 +145,32 @@ void LinkedList::Append(Node* node)
 
 void LinkedList::InsertAfter(string target, string data)
 {
-    Node* location = Find(data);
+    // the target node to insert after
+    Node* location = Find(target);
+    // the node to be inserted
     Node* node = new Node(data);
 
-    if (location == nullptr)
+    if (location != nullptr)
     {
-        Add(node);
+        // if its the tail we just add
+        if (location == tail)
+        {
+            Add(node);
+        }
+        else
+        {
+            location->GetNext()->SetPrev(node);
+            node->SetNext(location->GetNext());
+            node->SetPrev(location);
+            location->SetNext(node);
+        }
     }
-    else if (location == tail)
+    else // list is empty
     {
-        Add(node);
+        InitEmptyList(node);
     }
-    else
-    {
-        location->SetNext(node);
-        node->SetPrev(location);
-        node->SetNext(location->GetNext());
-        location->GetNext()->SetPrev(node);
 
-        size++;
-    }
+    size++;
 }
 
 void LinkedList::InsertBefore(string target, string data)
@@ -172,23 +178,26 @@ void LinkedList::InsertBefore(string target, string data)
     Node* location = Find(target);
     Node* node = new Node(data);
 
-    if (location == nullptr)
+    if (location != nullptr)
     {
-        Add(node);
-    }
-    else if (location == head)
-    {
-        Append(node);
+        if (location == head)
+        {
+            Append(node);
+        }
+        else
+        {
+            location->GetPrev()->SetNext(node);
+            node->SetNext(location);
+            node->SetPrev(location->GetPrev());
+            location->SetPrev(node);
+        }
     }
     else
     {
-        location->SetPrev(node);
-        node->SetNext(location);
-        node->SetPrev(location->GetPrev());
-        location->GetPrev()->SetNext(node);
-
-        size++;
+        InitEmptyList(node);
     }
+
+    size++;
 }
 
 void LinkedList::PopFront()
